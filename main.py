@@ -3,37 +3,11 @@ from urllib.error import HTTPError
 from urllib.parse import urlparse, parse_qs
 from json import load
 from http.client import InvalidURL
-import os, time, json, random, string, re, ctypes, threading
+import os, time, json, random, string, re, threading
 
-try:
-    import colorama 
-    import pystyle
-    import datetime
-except ModuleNotFoundError:
-    os.system("pip install colorama")
-    os.system("pip install pystyle")
-    os.system("pip install datetime")
-
-from colorama import Fore, Style
-from pystyle import Write, System, Colors, Colorate, Anime
-from datetime import datetime
-
-red = Fore.RED
-yellow = Fore.YELLOW
-green = Fore.GREEN
-blue = Fore.BLUE
-orange = Fore.RED + Fore.YELLOW
-pretty = Fore.LIGHTMAGENTA_EX + Fore.LIGHTCYAN_EX
-magenta = Fore.MAGENTA
-lightblue = Fore.LIGHTBLUE_EX
-cyan = Fore.CYAN
-gray = Fore.LIGHTBLACK_EX + Fore.WHITE
-reset = Fore.RESET
-pink = Fore.LIGHTGREEN_EX + Fore.LIGHTMAGENTA_EX
-dark_green = Fore.GREEN + Style.BRIGHT
+# Removed ctypes related code
 
 output_lock = threading.Lock()
-colorama.init()
 
 def get_time_rn():
     date = datetime.now()
@@ -42,8 +16,6 @@ def get_time_rn():
     second = date.second
     timee = "{:02d}:{:02d}:{:02d}".format(hour, minute, second)
     return timee
-
-ctypes.windll.kernel32.SetConsoleTitleW(f'[ Kahoot Answer Hack ] By H4cK3dR4Du#1337 | Support --> https://discord.gg/Un63v2truD')
 
 api = "https://play.kahoot.it/rest/kahoots/"
 class Kahoot:
@@ -142,33 +114,31 @@ class Kahoot:
         return answers
     
 def start_kahoot():
-    System.Clear()
-    Write.Print(f"root@kahoot_link ~> ", Colors.purple_to_blue, interval=0.000); link = input(pretty)
+    print("root@kahoot_link ~> ", end="")
+    link = input("Enter Kahoot link: ")
     try:
         parsed_url = urlparse(link)
         query_params = parse_qs(parsed_url.query)
         quiz_id = query_params.get("quizId", [])[0]
         kahoot = Kahoot(quiz_id)
         time_rn = get_time_rn()
-        print()
-        print(f"{pretty}{time_rn} {reset}| ({magenta}${reset}) Fetching Answers... {pink}[ {reset}{quiz_id} {pink}]\n")
+        print(f"\n{time_rn} | (${quiz_id}) Fetching Answers...\n")
         time.sleep(1)
         for i in range(kahoot.get_quiz_length()):
             if kahoot.get_answer(i) is not None:
                 if kahoot.get_question_details(i)['type'] == 'open_ended':
                     with output_lock:
                         time_rn = get_time_rn()
-                        print(f"{pretty}{time_rn} {reset}| ({yellow}*{reset}) Question ---> {pink}[ {reset}{kahoot.get_question_names()[i]} {pink}]{reset}\n{pretty}{time_rn} {reset}| ({green}+{reset}) Answer ----> {pink} [ {reset}{', '.join(kahoot.get_answer(i))}{pink} ]")
+                        print(f"{time_rn} | (*) Question ---> [{kahoot.get_question_names()[i]}]\n{time_rn} | (+) Answer ----> [{', '.join(kahoot.get_answer(i))}]")
                 else:
                     with output_lock:
                         time_rn = get_time_rn()
-                        print(f"{pretty}{time_rn} {reset}| ({yellow}*{reset}) Question ---> {pink}[ {reset}{kahoot.get_question_names()[i]} {pink}]{reset}\n{pretty}{time_rn} {reset}| ({green}+{reset}) Answer ----> {pink} [ {reset}{', '.join(kahoot.get_answer(i))}{pink} ]")
+                        print(f"{time_rn} | (*) Question ---> [{kahoot.get_question_names()[i]}]\n{time_rn} | (+) Answer ----> [{', '.join(kahoot.get_answer(i))}]")
             time.sleep(0.020)
     except:         
         start_kahoot()
 
-Write.Print(f"""
-
-""", Colors.purple_to_blue, interval=0.000)
+print("\n")
 start_kahoot()
-Write.Print(f"\nroot@press_enter ~> ", Colors.purple_to_blue, interval=0.000); input(pretty)
+print("\nPress Enter to exit: ")
+input()
